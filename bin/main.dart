@@ -4,8 +4,8 @@ import 'package:dart_clean/dart_clean.dart';
 
 final help = '''Usage: dart_clean <folder> [<flags>]\n
 dart_clean – clean dart and flutter repositories
-- for Flutter packages, `flutter clean` is executed\n
-- for other Dart packages, `build/`, `.dart_tool/`, `.pub_cache/` and `.packages` are removed.
+- for Flutter packages, `flutter clean` is executed
+- for other Dart packages, `build/`, `.dart_tool/`, `.pub_cache/` and `.packages` are removed.\n
 Flags:
 --recursive or -r\tRecursively clean subfolders
 --help or -h\t\tThis help page

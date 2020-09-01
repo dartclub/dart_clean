@@ -4,7 +4,12 @@ import 'package:path/path.dart' as p;
 
 import 'package:yaml/yaml.dart';
 
-final ignores = ['node_modules', '.git'];
+final ignores = [
+  'node_modules',
+  '.git',
+  '.idea',
+  '.vscode',
+];
 
 Future<void> _deleteDir(String base, String end) async {
   var buildDir = Directory(p.join(base, end));
@@ -62,7 +67,7 @@ Future<void> clean(
       await _deleteDir(path, 'build');
       await _deleteDir(path, '.dart_tool');
       if (!explicitNoCache) {
-        await _deleteDir(path, '.pub_cache');
+        await _deleteDir(path, '.pub-cache');
         await _deleteDir(path, '.packages');
       }
       if (explicitRemoveGenerated) {
