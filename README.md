@@ -1,6 +1,6 @@
 # dart_clean
 
-![Pub Version](https://img.shields.io/pub/v/dart_clean)
+[![Pub Version](https://img.shields.io/pub/v/dart_clean)](https://pub.dev/packages/dart_clean)
 
 dart_clean – a CLI tool to clean dart and flutter repositories recursively
 
