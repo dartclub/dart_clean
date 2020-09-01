@@ -12,17 +12,17 @@ $ pub global activate dart_clean
 
 ## Use
 
-```
+```text
 Usage: dart_clean <folder> [<flags>]
 
 dart_clean – clean dart and flutter repositories
 - for Flutter packages, `flutter clean` is executed
-- for other Dart packages, `build/`, `.dart_tool/`, `.pub_cache/` and `.packages` are removed.
+- for other Dart packages, `build/` and `.dart_tool/` are removed.
 
 Flags:
 --recursive or -r       Recursively clean subfolders
 --help or -h            This help page
---no-cache              Explicitly ignore `.pub_cache` and `.packages`
+--remove-cache          Explicitly remove `.pub_cache` and `.packages`
 --remove-generated      Explicitly remove generated dart files matching `*.g.dart`
 ```
 
@@ -30,7 +30,7 @@ Flags:
 
 You have a directory structure like this on your computer and you don't want to declutter every folder manually:
 
-```
+```text
 YourProjects/
     org1/
         repo1/ <- Flutter app

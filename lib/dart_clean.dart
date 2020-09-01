@@ -34,7 +34,7 @@ Future<void> _deleteGenerated(Directory dir) async {
 Future<void> clean(
   Directory dir,
   bool recursive, {
-  bool explicitNoCache = false,
+  bool explicitRemoveCache = false,
   bool explicitRemoveGenerated = false,
 }) async {
   var path = await dir.resolveSymbolicLinks();
@@ -66,13 +66,13 @@ Future<void> clean(
       print('Cleaning `$path`');
       await _deleteDir(path, 'build');
       await _deleteDir(path, '.dart_tool');
-      if (!explicitNoCache) {
-        await _deleteDir(path, '.pub-cache');
-        await _deleteDir(path, '.packages');
-      }
-      if (explicitRemoveGenerated) {
-        await _deleteGenerated(dir);
-      }
+    }
+    if (explicitRemoveCache) {
+      await _deleteDir(path, '.pub-cache');
+      await _deleteDir(path, '.packages');
+    }
+    if (explicitRemoveGenerated) {
+      await _deleteGenerated(dir);
     }
   } else {
     if (recursive) {
@@ -82,7 +82,8 @@ Future<void> clean(
           .where((entity) => entity is Directory)
           .cast<Directory>();
       await for (var subDir in subDirs) {
-        await clean(subDir, recursive, explicitNoCache: explicitNoCache);
+        await clean(subDir, recursive,
+            explicitRemoveCache: explicitRemoveCache);
       }
     } else {
       print('No pubspec found, skipping `$path`');
