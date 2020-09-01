@@ -9,7 +9,7 @@ dart_clean – clean dart and flutter repositories
 Flags:
 --recursive or -r\tRecursively clean subfolders
 --help or -h\t\tThis help page
---remove-cache\t\tExplicitly remove `.pub_cache` and `.packages`
+--remove-cache\t\tExplicitly remove `.pub_cache`, `.packages` and `pubspec.lock`
 --remove-generated\tExplicitly remove generated dart files matching `*.g.dart`
 ''';
 void main(List<String> arguments) async {

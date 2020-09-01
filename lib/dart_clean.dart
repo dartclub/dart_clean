@@ -12,10 +12,18 @@ final ignores = [
 ];
 
 Future<void> _deleteDir(String base, String end) async {
-  var buildDir = Directory(p.join(base, end));
-  if (await buildDir.exists()) {
-    print('\tRemoving ${buildDir.path}');
-    await buildDir.delete(recursive: true);
+  var dir = Directory(p.join(base, end));
+  if (await dir.exists()) {
+    print('\tRemoving ${dir.path}');
+    await dir.delete(recursive: true);
+  }
+}
+
+Future<void> _deleteFile(String base, String end) async {
+  var file = File(p.join(base, end));
+  if (await file.exists()) {
+    print('\tRemoving ${file.path}');
+    await file.delete();
   }
 }
 
@@ -69,7 +77,8 @@ Future<void> clean(
     }
     if (explicitRemoveCache) {
       await _deleteDir(path, '.pub-cache');
-      await _deleteDir(path, '.packages');
+      await _deleteFile(path, '.packages');
+      await _deleteFile(path, 'pubspec.lock');
     }
     if (explicitRemoveGenerated) {
       await _deleteGenerated(dir);
