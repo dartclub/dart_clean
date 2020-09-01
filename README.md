@@ -4,6 +4,14 @@
 
 dart_clean – a CLI tool to clean dart and flutter repositories recursively
 
+## Install
+
+```
+$ pub global activate dart_clean
+```
+
+## Use
+
 ```
 Usage: dart_clean <folder> [<flags>]
 
@@ -17,7 +25,6 @@ Flags:
 --no-cache              Explicitly ignore `.pub_cache` and `.packages`
 --remove-generated      Explicitly remove generated dart files matching `*.g.dart`
 ```
-
 
 ## Example & Why?
 
