@@ -30,7 +30,7 @@ Future<void> _deleteFile(String base, String end) async {
 Future<void> _deleteGenerated(Directory dir) async {
   print('\tRemoving generated files matching `**/*.g.dart`');
 
-  var files = await dir
+  var files = dir
       .list(recursive: true)
       .where((entity) => entity is File && entity.path.endsWith('.g.dart'))
       .cast<File>();
@@ -49,13 +49,21 @@ Future<void> clean(
   if (ignores.contains(p.split(path).last) || path.endsWith('.git')) {
     return;
   }
-  File pubspec = await dir.list(recursive: false).singleWhere(
-        (element) => (element is File) && element.path.endsWith('pubspec.yaml'),
-        orElse: () => null,
-      );
+
+  late final File? pubspec;
+  try {
+    pubspec = await dir
+        .list(recursive: false)
+        .where((event) => event is File)
+        .cast<File>()
+        .singleWhere((element) => element.path.endsWith('pubspec.yaml'));
+  } catch (e) {
+    pubspec = null;
+  }
+
   if (pubspec != null) {
     YamlMap parsed = loadYaml(await pubspec.readAsString());
-    YamlMap dependencies = parsed["dependencies"];
+    YamlMap? dependencies = parsed["dependencies"];
 
     if (dependencies != null && dependencies.containsKey('flutter')) {
       print('Cleaning `$path`');
@@ -69,7 +77,7 @@ Future<void> clean(
         throw result.stderr;
       }
       print(
-          '\t' + result.stdout.toString().trimRight().replaceAll('\n', '\n\t'));
+          '\t${result.stdout.toString().trimRight().replaceAll('\n', '\n\t')}');
     } else {
       print('Cleaning `$path`');
       await _deleteDir(path, 'build');
@@ -86,7 +94,7 @@ Future<void> clean(
   } else {
     if (recursive) {
       print('No pubspec found, skipping `$path`');
-      var subDirs = await dir
+      var subDirs = dir
           .list(recursive: false)
           .where((entity) => entity is Directory)
           .cast<Directory>();
