@@ -42,8 +42,8 @@ Future<void> _deleteGenerated(Directory dir) async {
 Future<void> clean(
   Directory dir,
   bool recursive, {
-  bool explicitRemoveCache = false,
-  bool explicitRemoveGenerated = false,
+  required bool explicitRemoveCache,
+  required bool explicitRemoveGenerated,
 }) async {
   var path = await dir.resolveSymbolicLinks();
   if (ignores.contains(p.split(path).last) || path.endsWith('.git')) {
@@ -91,19 +91,58 @@ Future<void> clean(
     if (explicitRemoveGenerated) {
       await _deleteGenerated(dir);
     }
+
+    // Keep looking recursively, as there could be nested packages
+    // in a Dart/Flutter project
+    if (recursive) {
+      await _cleanRecursive(
+        dir,
+        isDartFlutterDir: true,
+        explicitRemoveCache: explicitRemoveCache,
+        explicitRemoveGenerated: explicitRemoveGenerated,
+      );
+    }
   } else {
     if (recursive) {
       print('No pubspec found, skipping `$path`');
-      var subDirs = dir
-          .list(recursive: false)
-          .where((entity) => entity is Directory)
-          .cast<Directory>();
-      await for (var subDir in subDirs) {
-        await clean(subDir, recursive,
-            explicitRemoveCache: explicitRemoveCache);
-      }
+
+      await _cleanRecursive(
+        dir,
+        isDartFlutterDir: false,
+        explicitRemoveCache: explicitRemoveCache,
+        explicitRemoveGenerated: explicitRemoveGenerated,
+      );
     } else {
       print('No pubspec found, skipping `$path`');
     }
+  }
+}
+
+Future<void> _cleanRecursive(
+  Directory dir, {
+  required bool isDartFlutterDir,
+  required bool explicitRemoveCache,
+  required bool explicitRemoveGenerated,
+}) async {
+  var subDirs = dir
+      .list(recursive: false)
+      .where((entity) => entity is Directory)
+      .cast<Directory>();
+
+  await for (var subDir in subDirs) {
+    final folderName = p.basename(subDir.path);
+
+    // If we are recursively cleaning from a Dart/Flutter project, there is no need
+    // to navigate to `lib`, `bin` or `test` folders
+    if (isDartFlutterDir && {'lib', 'bin', 'test'}.contains(folderName)) {
+      continue;
+    }
+
+    await clean(
+      subDir,
+      true,
+      explicitRemoveCache: explicitRemoveCache,
+      explicitRemoveGenerated: explicitRemoveGenerated,
+    );
   }
 }
